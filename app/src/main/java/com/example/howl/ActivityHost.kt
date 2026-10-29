@@ -30,6 +30,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import java.util.Locale
+import java.util.concurrent.atomic.AtomicBoolean
 import kotlin.math.roundToInt
 import kotlin.random.Random
 
@@ -58,6 +59,9 @@ enum class ActivityType(val displayName: String, val iconResId: Int) {
     SINETIME("Sine time", R.drawable.wave) { override fun create() = SineTimeActivity() };
 
     abstract fun create(): Activity
+
+    val isCalibration: Boolean
+        get() = this == CALIBRATE_POWER || this == CALIBRATE_FREQ || this == CALIBRATE_POSITION
 }
 
 object ActivityHost : PulseSource {
@@ -81,6 +85,15 @@ object ActivityHost : PulseSource {
     private val _currentActivity = MutableStateFlow(switchActivity(randomActivityType()))
     val currentActivity: StateFlow<ActivityState> = _currentActivity.asStateFlow()
 
+    private val waveform = ActivityWaveformConditioner()
+    private val resetWaveform = AtomicBoolean(true)
+    private var lastActivity: Activity? = null
+    private var lastWaveformMode: ActivityWaveformMode? = null
+
+    override fun onPlaybackStart() {
+        resetWaveform.set(true)
+    }
+
     override fun getPulse(time: Double, deltaTime: Double): Pulse {
         val changeProbability = Prefs.activityChangeProbability.value
         val probability = (changeProbability * 3.0 * deltaTime) / 60.0
@@ -88,8 +101,17 @@ object ActivityHost : PulseSource {
             randomActivity()
         }
 
-        _currentActivity.value.instance.runSimulation(deltaTime)
-        return _currentActivity.value.instance.getPulse()
+        val activity = _currentActivity.value
+        val mode = Prefs.activityWaveformMode.value
+        val sessionChanged = resetWaveform.getAndSet(false)
+        if (sessionChanged || lastActivity !== activity.instance || lastWaveformMode != mode) {
+            waveform.reset()
+            lastActivity = activity.instance
+            lastWaveformMode = mode
+        }
+        activity.instance.runSimulation(deltaTime)
+        val pulse = activity.instance.getPulse()
+        return waveform.process(pulse, deltaTime, mode, activity.type.isCalibration)
     }
 
     private fun switchActivity(type: ActivityType): ActivityState {
@@ -154,11 +176,12 @@ fun ActivityHostPanel(
     val currentType = currentState.type
     val currentInstance = currentState.instance
     val activityChangeProbability by Prefs.activityChangeProbability.collectAsStateWithLifecycle()
+    val waveformMode by Prefs.activityWaveformMode.collectAsStateWithLifecycle()
     val excludedActivities by Prefs.activityExcludedFromRandom.collectAsStateWithLifecycle()
     val playerState by Player.playerState.collectAsStateWithLifecycle()
     val isPlaying = playerState.isPlaying && playerState.activePulseSource == ActivityHost
     val excludedColor = MaterialTheme.colorScheme.error
-    val isCalibration = currentType.displayName.contains("Calibrate")
+    val isCalibration = currentType.isCalibration
 
     Column(
         modifier = modifier.padding(16.dp),
@@ -231,6 +254,38 @@ fun ActivityHostPanel(
                         )
                     }
                 }
+
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.SpaceBetween
+                ) {
+                    Text("Waveform method", style = MaterialTheme.typography.titleMedium,
+                        modifier = Modifier.weight(1f))
+                    OptionPicker(
+                        currentValue = waveformMode,
+                        onValueChange = {
+                            // Change methods while stopped, discarding any partially built batch.
+                            // The user can compare methods by pressing Play again.
+                            if (isPlaying) viewModel.stop()
+                            Prefs.activityWaveformMode.value = it
+                            Prefs.activityWaveformMode.save()
+                        },
+                        options = ActivityWaveformMode.entries,
+                        getText = { it.displayName }
+                    )
+                }
+                Text(
+                    text = if (isCalibration) {
+                        "Calibration always uses Classic."
+                    } else if (waveformMode == ActivityWaveformMode.ENHANCED) {
+                        "Experimental smoothing of Activity amplitude rises and frequency changes. " +
+                            "Reductions and silence are immediate. Affects Activity output and recordings."
+                    } else {
+                        "Original Howl Activity waveforms."
+                    },
+                    style = MaterialTheme.typography.bodySmall
+                )
 
                 SliderWithLabel(
                     label = "Random activity change probability",

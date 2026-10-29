@@ -83,6 +83,7 @@ interface PulseSource {
     val shouldLoop: Boolean
     val readyToPlay: Boolean
     val latencyCompensation: Boolean
+    fun onPlaybackStart() {}
     fun getPulse(time: Double, deltaTime: Double): Pulse
 }
 
@@ -158,6 +159,7 @@ object Player {
         val playFrom = from ?: playhead.position
         if (playerState.activePulseSource?.readyToPlay != true) return
 
+        playerState.activePulseSource.onPlaybackStart()
         _playerState.update { it.copy(isPlaying = true) }
         playhead.setSpeed(Prefs.playerPlaybackSpeed.value.toDouble())
         playhead.start(playFrom)

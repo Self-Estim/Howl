@@ -240,6 +240,8 @@ object Prefs {
     val generatorWaveChangeProbability = register("generator_wave_change_prob", 0.2f, FloatAdapter)
 
     // Activity related (global)
+    val activityWaveformMode = register("activity_waveform_mode", ActivityWaveformMode.CLASSIC,
+        EnumAdapter(ActivityWaveformMode.entries.toTypedArray()))
     val activityChangeProbability = register("activity_change_prob", 0.0f, FloatAdapter)
     val activityExcludedFromRandom = register("activity_excluded_from_random", listOf(ActivityType.CALIBRATE_POWER, ActivityType.CALIBRATE_FREQ,
         ActivityType.CALIBRATE_POSITION), EnumListAdapter(ActivityType.entries.toTypedArray()))

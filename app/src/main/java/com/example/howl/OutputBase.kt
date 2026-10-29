@@ -14,14 +14,6 @@ import kotlin.math.max
 const val MAIN_LOOP_RATE_HZ = 40
 const val MAIN_LOOP_INTERVAL_SECS = 1.0 / MAIN_LOOP_RATE_HZ  // 0.025s
 
-@Serializable
-data class Pulse (
-    val ampA: Float = 0.0f,
-    val ampB: Float = 0.0f,
-    val freqA: Float = 0.0f,
-    val freqB: Float = 0.0f
-)
-
 /**
  * A fully-resolved pulse ready for output delivery. Contains all [Pulse] fields
  * plus the device power levels and frequencies mapped into Hz for the app's

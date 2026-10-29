@@ -17,6 +17,12 @@ Its features include: -
 
 ## Installation
 
+This fork includes an experimental **Classic / Enhanced** waveform selector in
+the Activity tab. Classic is the default. Enhanced conditions amplitude rises
+and frequency transitions; it does not reproduce X-Toys' proprietary patterns.
+See [the implementation and comparison plan](docs/enhanced-activity-plan.md)
+for behavior, validation, and the remaining X-Toys comparison work.
+
 A pre-built APK file for the latest version can be <a href="https://github.com/Amethyst-Sysadmin/Howl/releases/latest/download/howl.apk">found here</a>. You simply need to install the APK file on your Android device.
 
 Additional downloads, including older versions and the Kodi add-on, may be found on the main <a href="https://github.com/Amethyst-Sysadmin/Howl/releases">Releases page</a>.
