@@ -19,7 +19,7 @@ Its features include: -
 
 This fork includes an experimental **Classic / Enhanced** waveform selector in
 the Activity tab. Classic is the default. Enhanced conditions amplitude rises
-and frequency transitions; it does not reproduce X-Toys' proprietary patterns.
+and frequency transitions; it does not reproduce the named X-Toys audio patterns.
 See [the implementation and comparison plan](docs/enhanced-activity-plan.md)
 for behavior, validation, and the remaining X-Toys comparison work.
 

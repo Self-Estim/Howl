@@ -47,9 +47,56 @@ describes patterns but does not establish the DSP claims in the research paper.
 The user's X-Toys public reference patterns are: Penelope, Lilith's Punishment,
 On the Edge of the World, Estim pleasure pattern, wowstereohmmm.freightgod69,
 Kiss of Venus (Extended), Path to Nirvana, and Algea. These are comparison targets,
-not bundled assets. Pattern names alone do not establish their format or signal
-conversion method. Inspect their metadata and conversion settings before
-attributing the perceived difference to interpolation or transport.
+not bundled assets. Their public metadata was inspected in an isolated browser
+session with the user's authorization to accept X-Toys' notices. All eight are
+listed as **Audio**, with two E-Stim channels, in the
+[public library](https://xtoys.app/patterns):
+
+| Reference | Listed duration |
+| --- | --- |
+| Penelope | 51m 28s |
+| Lilith's Punishment | 25m |
+| On the edge of the world | 36m 54s |
+| Estim pleasure pattern | 32m 21s |
+| wowstereohmmm.freightgod69 | 4m 15s |
+| Kiss of Venus (Extended) | 1h 2m 13s |
+| 01 Path to Nirvana | 12m 48s |
+| Algea | 59m 26s |
+
+These are the matching titles, excluding similarly named variants such as
+Penelope Reloaded. Search the public library by title. No account was used,
+no patterns were saved, and no audio content was copied into the repository.
+
+X-Toys' [pattern guide](https://guide.xtoys.app/getting-started/using-patterns.html)
+explains that Audio patterns use source audio on audio outputs and a simplified
+interpretation on other devices. This does **not** specify its Coyote conversion
+algorithm. The evidence changes the next implementation priority: inspect
+audio-to-pulse translation and source content, rather than assume smoothing
+alone will reproduce the user's preferred experience.
+
+## Next implementation phase
+
+1. Establish a matched reference: an authorized source-audio file and the
+   corresponding X-Toys Coyote settings or a sanitized BLE capture. Compare the
+   same passage on the same hardware. The titles/metadata alone do not determine
+   the transmitted frequencies, amplitudes, or BF balance parameters.
+2. Benchmark the existing `python/hwl.py` audio converter and HWL playback path.
+   That converter already uses Aubio pitch detection (`yinfft` by default), a
+   4096-sample analysis window at 40960 Hz, 128-sample hops, 40 Hz binning, and
+   file-wide amplitude/frequency normalization. These are real implementation
+   differences to measure against the reference, rather than invent a new
+   multimedia framework.
+3. Use synthetic stereo tones, frequency sweeps, amplitude steps, silence, and
+   short bursts to measure pitch tracking, envelope preservation, analysis delay,
+   normalization, and channel separation. Check high/low frequency mapping and
+   balance settings independently from Bluetooth delivery timing.
+4. Implement a separate Enhanced audio conversion option only after those
+   measurements identify useful changes. Reuse HWL initially to avoid coupling
+   audio decoding, device transport, and the Activity simulation in one change.
+5. For Activity, retain the selector as the comparison seam, then evaluate
+   texture/envelope changes against the measured reference traits. The current
+   conditioning prototype is a bounded first experiment, not the final matching
+   engine. Exact content reproduction and subjective quality remain unverified.
 
 Exact X-Toys matching requires a named pattern and settings or a controlled BLE
 capture. Compare equal power, frequency range, balance parameters, and electrode
