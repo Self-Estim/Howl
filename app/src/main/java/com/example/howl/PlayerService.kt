@@ -105,7 +105,7 @@ class PlayerService : Service() {
 
     private fun createNotification(): Notification {
         return NotificationCompat.Builder(this, NOTIFICATION_CHANNEL_ID)
-            .setContentTitle("Howl")
+            .setContentTitle(getString(R.string.app_name))
             .setContentText("Playing in the background.")
             .setSmallIcon(R.drawable.ic_launcher_foreground)
             .setPriority(NotificationCompat.PRIORITY_LOW)

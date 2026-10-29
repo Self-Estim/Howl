@@ -156,6 +156,23 @@ not committed. No connected-device, emulator UI, or physical waveform comparison
 has been performed. In particular, passing these tests does not establish a
 subjective improvement over Classic or equivalence to the named X-Toys patterns.
 
+## Independent installation
+
+Fork builds use application ID `com.example.howl.waveform`, launcher name
+**Howl Waveform**, and version name `2.1.1-waveform`. This allows installation
+alongside official Howl (`com.example.howl`) without replacing it or uninstalling
+it. The source namespace remains `com.example.howl`; manifest component class
+names must still resolve to the existing source classes. Playback notifications
+use the app-name resource so the two apps are distinguishable while playing.
+
+The fork has its own app-data sandbox, settings database, runtime permissions,
+and file-access grants. It starts with independent defaults; settings are not
+automatically copied from official Howl or from an earlier same-ID test APK.
+Switching between apps requires disconnecting the Coyote from the first app.
+No waveform, power-limit, or Bluetooth behavior changes accompany this packaging
+change. The APK package ID, launcher label, and launch activity are checked in
+the built artifact before delivery.
+
 To repeat the build with the provisioned local tools from the repository root:
 
 ```powershell

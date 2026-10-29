@@ -23,6 +23,13 @@ and frequency transitions; it does not reproduce the named X-Toys audio patterns
 See [the implementation and comparison plan](docs/enhanced-activity-plan.md)
 for behavior, validation, and the remaining X-Toys comparison work.
 
+Fork builds install as **Howl Waveform** (`com.example.howl.waveform`), so the
+official Howl and this fork can coexist. Settings, permissions, and imported-file
+access are separate; configure the fork independently. Disconnect the Coyote
+from one app before connecting it to the other. The fork's debug APK is built at
+`app/build/outputs/apk/debug/app-debug.apk`; the upstream download below installs
+official Howl and does not contain this fork's Enhanced mode.
+
 A pre-built APK file for the latest version can be <a href="https://github.com/Amethyst-Sysadmin/Howl/releases/latest/download/howl.apk">found here</a>. You simply need to install the APK file on your Android device.
 
 Additional downloads, including older versions and the Kodi add-on, may be found on the main <a href="https://github.com/Amethyst-Sysadmin/Howl/releases">Releases page</a>.

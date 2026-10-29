@@ -10,11 +10,12 @@ android {
     compileSdk = 37
 
     defaultConfig {
-        applicationId = "com.example.howl"
+        // Give every build of this fork its own installation and app-data sandbox.
+        applicationId = "com.example.howl.waveform"
         minSdk = 26
         targetSdk = 37
         versionCode = 210
-        versionName = "2.1.1"
+        versionName = "2.1.1-waveform"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }

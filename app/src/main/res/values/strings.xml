@@ -1,4 +1,4 @@
 <resources>
-    <string name="app_name">Howl</string>
-    <string name="audio_playback_attribution">"Howl"</string>
+    <string name="app_name">Howl Waveform</string>
+    <string name="audio_playback_attribution">Howl Waveform</string>
 </resources>
